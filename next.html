@@ -1,0 +1,205 @@
+<html>
+<head>
+	<title>Test</title>
+	<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.css"/>
+	<script type="text/javascript" src="bootstrap/js/bootstrap.js"></script>
+	<style>
+    .affix {
+      top: 0;
+      width: 100%;
+    }
+    
+    .affix + .container-fluid {
+      padding-top: 70px;
+    }
+    .redText {
+      color: red;
+    }
+    
+		.submitbtn {
+			background-color: white;
+		}
+    
+  </style>
+  
+  <script>
+    
+    var dest1 = {
+      "name" : "Beograd",
+      "price" : 1500,
+      "type" : "ordinary"  
+    };
+    
+    var dest2 = {
+      "name" : "Vienna",
+      "price" : 2500,
+      "type" : "ordinary"  
+    };
+    
+    var dest3 = {
+      "name" : "Budapest",
+      "price" : 1800,
+      "type" : "ordinary"  
+    };
+    
+    var dest4 = {
+      "name" : "London",
+      "price" : 3500,
+      "type" : "silver"  
+    };
+    
+    var dest5 = {
+      "name" : "Madrid",
+      "price" : 1500,
+      "type" : "silver"  
+    };
+    
+    var dest6 = {
+      "name" : "Moscow",
+      "price" : 3500,
+      "type" : "gold"  
+    };
+    
+    var dest7 = {
+      "name" : "Rome",
+      "price" : 3900,
+      "type" : "gold"  
+    };
+    
+    var dest8 = {
+      "name" : "Tokyo",
+      "price" : 4500,
+      "type" : "platinum"  
+    };
+    
+    var dest9 = {
+      "name" : "New York",
+      "price" : 4800,
+      "type" : "platinum"  
+    };
+    
+    var destinations = [];
+    destinations.push(dest1);
+    destinations.push(dest2);
+    destinations.push(dest3);
+    destinations.push(dest4);
+    destinations.push(dest5);
+    destinations.push(dest6);
+    destinations.push(dest7);
+    destinations.push(dest8);
+    destinations.push(dest9);
+    
+    
+    window.onload = function(){
+      search = window.location.search;
+      if(!search){
+        return
+      }
+      
+      var items = search.substring(1).split("&");
+      var obj = {};
+      
+      for (var i in items) {
+        var tmp = items[i].split("=");
+        obj[tmp[0]]=tmp[1];
+      }
+      
+      
+      var hello = document.getElementById("welcome_user");
+      hello.innerHTML= "Hello, "  + obj.ime + " "+ obj.prezime;
+      var passenger_status = obj.status;
+      if(passenger_status){
+        var hello_premium = document.getElementById("premium_member");
+        hello_premium.innerHTML = "You are our premium member, with "+  getMembership(obj.klasa) + " membership!"
+      }
+      
+      var sel1 = document.getElementById("sel1");
+      
+      if(passenger_status){
+        var membership = getMembership(obj.klasa);
+        
+        for (var i in destinations){
+          var  destination = destinations[i];
+          var canAdd = false;
+          
+          if(destination.type == "platinum" &  membership == "Platinum"){
+            canAdd = true;
+          }else if (destination.type == "gold" & ( membership == "Gold" || membership == "Platinum")){
+            canAdd = true;
+          }else if(destination.type == "silver" & (membership == "Silver" || membership == "Gold" || membership == "Platinum")){
+            canAdd = true;
+          }else if (destination.type == "ordinary" ){
+            canAdd = true;
+          }else{
+            canAdd = false;
+          }
+          if(canAdd){
+            sel1.options[sel1.options.length] = new Option(destinations[i].name , destinations.name);
+          }
+        }
+      } else{
+        for (var i in destinations){
+          destination = destinations[i];
+          if(destination.type == "ordinary"){
+            sel1.options[sel1.options.length] = new Option(destinations[i].name , destinations[i].name);
+          } 
+        }
+      }  
+    };
+    function getMembership(value){
+      if(value == 1){
+        return "Silver";
+      }else if (value == 2){
+        return "Gold";
+      }else{
+        return "Platinum";
+      }
+    };
+
+    function calculate(){
+       var sel1 = document.getElementById("sel1");
+       var dest = sel1.options[sel1.selectedIndex].value;
+       for (var i in destinations){
+        if(dest == destinations[i].name){
+          var p = document.getElementById("paragraph");
+          p.innerHTML = "<br> Price for your selected destination is " + destinations[i].price;
+        }
+       }
+    };
+    
+    
+  </script>
+  
+</head>
+<body>
+  <nav class="navbar navbar-inverse" data-spy="affix" data-offset-top="197">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">Test</a>
+      </div>
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="#">Forma</a></li>
+      </ul>
+    </nav>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-4 col-md-offset-4">
+          <form role="form">
+            <div class="starter-template">
+              <h1 id="welcome_user"></h1>
+              <h4 id="premium_member"></h4>
+            </div>
+            <div class="form-group">
+              <label for="sel1">Your possible destinations are:</label>
+              <select name="klasa" class="form-control" id="sel1">
+              </select>
+              <p class="lead" id="paragraph"></p>
+              
+            </div>		  			  		
+            <button type="button" class="btn btn-default col-md-4 pull-right submitbtn" id="submitbtn" onclick="calculate()">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+  </html>
